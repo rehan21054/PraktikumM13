@@ -1,10 +1,10 @@
 // =========================================
-// KONFIGURASI API
+// URL API untuk proses prediksi AI
 // =========================================
+// URL dan API Key SUDAH DISESUAIKAN dengan model Ultralytics milikmu
 const url = "https://predict-6a0d2cce2e7e52d13aa7-dproatj77a-et.a.run.app/predict";
-
-// Deklarasi apiKey (Pastikan huruf 'K' besar)
 const apiKey = "ul_b2ec0b34082de397cea80e140bf5f05a24691d5d";
+
 
 // =========================================
 // Mengambil elemen HTML dari DOM
@@ -75,7 +75,7 @@ detectBtn.addEventListener("click", async () => {
     // File gambar
     form.append("file", fileInput.files[0]);
 
-    // Confidence threshold
+    // Confidence threshold (Bisa diturunkan jadi 0.05 kalau AI sulit mendeteksi)
     form.append("conf", "0.25");
 
     // IoU threshold
@@ -90,9 +90,9 @@ detectBtn.addEventListener("click", async () => {
         const response = await fetch(url, {
             method: "POST",
 
-            // Header authorization (Ini yang sudah diperbaiki)
+            // Header authorization
             headers: {
-                Authorization: `Bearer ${api_key}`
+                Authorization: `Bearer ${apiKey}`
             },
 
             // Body berisi form data
@@ -103,7 +103,7 @@ detectBtn.addEventListener("click", async () => {
         const data = await response.json();
 
         // Debug hasil API
-        console.log(data);
+        console.log("HASIL API:", data);
 
         // Menampilkan gambar asli di area hasil
         resultImage.src = imagePreview.src;
@@ -118,7 +118,7 @@ detectBtn.addEventListener("click", async () => {
         // Jika terjadi error
         console.error(err);
 
-        alert("Error API!");
+        alert("Error API! Cek Console untuk detailnya.");
     }
 });
 
@@ -170,8 +170,8 @@ function drawResult(data) {
     // Ambil elemen list hasil deteksi
     const list = document.getElementById("resultList");
 
-    // Reset isi list sebelumnya
-    list.innerHTML = "";
+    // Reset isi list sebelumnya jika ada
+    if (list) list.innerHTML = "";
 
     // Ambil gambar hasil
     const img = resultImage;
@@ -255,17 +255,16 @@ function drawResult(data) {
         // ==============================================
         // TAMBAHKAN HASIL KE LIST HTML
         // ==============================================
-        const li = document.createElement("li");
-
-        li.textContent =
-            `${pred.name} (${(pred.confidence * 100).toFixed(1)}%)`;
-
-        list.appendChild(li);
+        if (list) {
+            const li = document.createElement("li");
+            li.textContent = `${pred.name} (${(pred.confidence * 100).toFixed(1)}%)`;
+            list.appendChild(li);
+        }
 
         // ==============================================
         // DRAW SEGMENTATION MASK
         // ==============================================
-        if (pred.segments && pred.segments.x.length > 0) {
+        if (pred.segments && pred.segments.x && pred.segments.x.length > 0) {
 
             // Ambil titik koordinat segmentasi
             const segX = pred.segments.x;
@@ -299,17 +298,21 @@ function drawResult(data) {
             // Isi warna transparan segmentasi
             // ==========================================
             ctx.fillStyle = `rgba(${r}, ${g}, ${b}, 0.3)`;
-
             ctx.fill();
 
             // ==========================================
             // Outline segmentasi
             // ==========================================
             ctx.strokeStyle = bgColor;
-
             ctx.lineWidth = 2;
-
             ctx.stroke();
         }
     });
+
+    // Jika tidak ada hasil deteksi sama sekali
+    if (results.length === 0 && list) {
+        const li = document.createElement("li");
+        li.textContent = "Tidak ada objek terdeteksi";
+        list.appendChild(li);
+    }
 }
