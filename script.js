@@ -1,8 +1,11 @@
 // =========================================
 // URL API untuk proses prediksi AI
 // =========================================
-url = "https://predict-6a0d2cce2e7e52d13aa7-dproatj77a-et.a.run.app/predict"
-api_key = "ul_b2ec0b34082de397cea80e140bf5f05a24691d5d"
+const url =
+    "https://predict-6a0d2cce2e7e52d13aa7-dproatj77a-et.a.run.app/predict";
+
+const apiKey =
+    "ul_b2ec0b34082de397cea80e140bf5f05a24691d5d";
 
 
 // =========================================
@@ -85,6 +88,8 @@ detectBtn.addEventListener("click", async () => {
 
     try {
 
+        console.log("Mengirim request ke API...");
+
         // Request POST ke API
         const response = await fetch(url, {
             method: "POST",
@@ -98,11 +103,16 @@ detectBtn.addEventListener("click", async () => {
             body: form
         });
 
+        // Jika response gagal
+        if (!response.ok) {
+            throw new Error(`HTTP Error: ${response.status}`);
+        }
+
         // Konversi response menjadi JSON
         const data = await response.json();
 
         // Debug hasil API
-        console.log(data);
+        console.log("HASIL API:", data);
 
         // Menampilkan gambar asli di area hasil
         resultImage.src = imagePreview.src;
@@ -115,9 +125,9 @@ detectBtn.addEventListener("click", async () => {
     } catch (err) {
 
         // Jika terjadi error
-        console.error(err);
+        console.error("ERROR:", err);
 
-        alert("Error API!");
+        alert("Error API: " + err.message);
     }
 });
 
@@ -162,6 +172,8 @@ function getTextColor(r, g, b) {
 // FUNGSI UTAMA UNTUK MENAMPILKAN HASIL DETEKSI
 // ======================================================
 function drawResult(data) {
+
+    console.log("DRAW RESULT:", data);
 
     // Ambil hasil prediksi dari response API
     const results = data.images?.[0]?.results || [];
@@ -234,7 +246,7 @@ function drawResult(data) {
         ctx.fillStyle = bgColor;
 
         // Background label
-        ctx.fillRect(left, top - 18, 120, 18);
+        ctx.fillRect(left, top - 18, 140, 18);
 
         // ==============================================
         // TEXT LABEL
@@ -311,4 +323,14 @@ function drawResult(data) {
             ctx.stroke();
         }
     });
+
+    // Jika tidak ada hasil
+    if (results.length === 0) {
+
+        const li = document.createElement("li");
+
+        li.textContent = "Tidak ada objek terdeteksi";
+
+        list.appendChild(li);
+    }
 }
