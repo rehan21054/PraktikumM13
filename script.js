@@ -2,7 +2,7 @@
 // URL API untuk proses prediksi AI
 // =========================================
 // URL dan API Key SUDAH DISESUAIKAN dengan model Ultralytics milikmu
-const url = "https://predict-6a0d2cce2e7e52d13aa7-dproatj77a-et.a.run.app/predict";
+const url = "https://predict-6a0d3d64348c7cf044bb-dproatj77a-et.a.run.app/predict";
 const apiKey = "ul_b2ec0b34082de397cea80e140bf5f05a24691d5d";
 
 
