@@ -42,7 +42,7 @@ detectBtn.addEventListener("click", async () => {
 
     const form = new FormData();
     form.append("file", fileInput.files[0]);
-    form.append("conf", "0.25");
+    form.append("conf", "0.05");
     form.append("iou", "0.7");
     form.append("imgsz", "640");
 
