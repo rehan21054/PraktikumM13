@@ -76,7 +76,7 @@ detectBtn.addEventListener("click", async () => {
     form.append("file", fileInput.files[0]);
 
     // Confidence threshold (Bisa diturunkan jadi 0.05 kalau AI sulit mendeteksi)
-    form.append("conf", "0.25");
+    form.append("conf", "0.01");
 
     // IoU threshold
     form.append("iou", "0.7");
